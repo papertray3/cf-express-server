@@ -1,6 +1,6 @@
 {
   "name": "@wds-ingest-common/config",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Config module for express server components",
   "main": "lib/index.js",
   "scripts": {
