@@ -1,0 +1,28 @@
+{
+  "name": "@wds-ingest-common/config",
+  "version": "0.0.1",
+  "description": "Config module for express server components",
+  "main": "lib/index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "build": "tsc",
+    "clean": "rimraf lib/"
+  },
+  "author": "Sean Thatcher <seanthat@us.ibm.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/dotenv": "^4.0.3",
+    "@types/log4js": "^2.3.5",
+    "@types/nconf": "^0.0.37",
+    "@types/node": "^10.5.2",
+    "@types/yargs": "^11.1.1",
+    "rimraf": "^2.6.2",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "cfenv": "^1.1.0",
+    "dotenv": "^6.0.0",
+    "nconf": "^0.10.0",
+    "yargs": "^12.0.1"
+  }
+}
