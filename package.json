@@ -1,5 +1,5 @@
 {
-  "name": "@wds-ingest-common/config",
+  "name": "@papertray3/express-config",
   "version": "1.0.0",
   "description": "Config module for express server components",
   "main": "lib/index.js",
