@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@types/dotenv": "^4.0.3",
-    "@types/log4js": "^2.3.5",
     "@types/nconf": "^0.0.37",
     "@types/node": "^10.5.2",
     "@types/yargs": "^11.1.1",
