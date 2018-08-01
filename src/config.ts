@@ -137,7 +137,6 @@ export function  getConfig(options : ConfigOptions) {
 
     nconf.overrides(overrides);
 
-    console.log(`port: ${nconf.get('port')}`);
     if (cfenv.getAppEnv().isLocal && !process.env.PORT) {
         if (nconf.get('port')) {
             process.env.PORT = nconf.get('port');
