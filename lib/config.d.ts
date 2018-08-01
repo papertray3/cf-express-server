@@ -12,7 +12,7 @@ export interface ConfigOptions {
     envPath?: string;
     usage?: string;
     cliOptions?: CliOptions;
-    defaults?: ConfigDefaults;
+    overrides?: ConfigDefaults;
 }
 export declare const commonOptions: CliOptions;
 declare type ConfigDefaults = {

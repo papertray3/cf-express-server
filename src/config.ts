@@ -22,7 +22,7 @@ export interface ConfigOptions {
     envPath?: string,
     usage?: string,
     cliOptions?: CliOptions,
-    defaults?: ConfigDefaults
+    overrides?: ConfigDefaults
 }
 
 export const commonOptions : CliOptions = {
@@ -89,7 +89,7 @@ export function  getConfig(options : ConfigOptions) {
     let opts : CliOptions = options.cliOptions || commonOptions;
     let whitelist : Array<string> = [];
     let transforms : Transforms = {};
-    let defaults : ConfigDefaults = options.defaults || {};
+    let defaults : ConfigDefaults = {};
 
     Object.keys(opts).forEach((key: string) => {
         let opt = opts[key];
@@ -130,9 +130,12 @@ export function  getConfig(options : ConfigOptions) {
 
     nconf.defaults(defaults);
 
-    nconf.overrides({
-        isLocal: cfenv.getAppEnv().isLocal
-    });
+    let overrides = options.overrides || {};
+    if (!overrides.isLocal) {
+        overrides.isLocal = cfenv.getAppEnv().isLocal;
+    }
+
+    nconf.overrides(overrides);
 
     console.log(`port: ${nconf.get('port')}`);
     if (cfenv.getAppEnv().isLocal && !process.env.PORT) {
