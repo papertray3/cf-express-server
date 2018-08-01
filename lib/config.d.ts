@@ -12,6 +12,11 @@ export interface ConfigOptions {
     envPath?: string;
     usage?: string;
     cliOptions?: CliOptions;
+    defaults?: ConfigDefaults;
 }
 export declare const commonOptions: CliOptions;
+declare type ConfigDefaults = {
+    [key: string]: any;
+};
 export declare function getConfig(options: ConfigOptions): typeof nconf;
+export {};

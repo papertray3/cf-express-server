@@ -21,7 +21,8 @@ export interface ConfigOptions {
     version?: string,
     envPath?: string,
     usage?: string,
-    cliOptions?: CliOptions
+    cliOptions?: CliOptions,
+    defaults?: ConfigDefaults
 }
 
 export const commonOptions : CliOptions = {
@@ -88,7 +89,7 @@ export function  getConfig(options : ConfigOptions) {
     let opts : CliOptions = options.cliOptions || commonOptions;
     let whitelist : Array<string> = [];
     let transforms : Transforms = {};
-    let defaults : ConfigDefaults = {};
+    let defaults : ConfigDefaults = options.defaults || {};
 
     Object.keys(opts).forEach((key: string) => {
         let opt = opts[key];
