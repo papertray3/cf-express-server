@@ -1,6 +1,6 @@
 {
   "name": "@papertray3/express-config",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Config module for express server components",
   "main": "lib/index.js",
   "scripts": {
