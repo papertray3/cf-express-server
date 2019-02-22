@@ -11,17 +11,17 @@
   "author": "Sean Thatcher <seanthat@us.ibm.com>",
   "license": "MIT",
   "devDependencies": {
-    "rimraf": "^2.6.2",
+    "rimraf": "^2.6.3",
     "typescript": "^2.9.2"
   },
   "dependencies": {
     "@types/dotenv": "^4.0.3",
     "@types/nconf": "^0.0.37",
-    "@types/node": "^10.5.2",
-    "@types/yargs": "^11.1.1",
-    "cfenv": "^1.1.0",
-    "dotenv": "^6.0.0",
+    "@types/node": "^10.12.26",
+    "@types/yargs": "^11.1.2",
+    "cfenv": "^1.2.0",
+    "dotenv": "^6.2.0",
     "nconf": "^0.10.0",
-    "yargs": "^12.0.1"
+    "yargs": "^12.0.5"
   }
 }
