@@ -8,7 +8,7 @@
     "build": "tsc",
     "clean": "rimraf lib/"
   },
-  "author": "Sean Thatcher <seanthat@us.ibm.com>",
+  "author": "Sean Thatcher <papertray3@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "rimraf": "^2.6.3",
