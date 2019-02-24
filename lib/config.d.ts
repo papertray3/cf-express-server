@@ -1,5 +1,4 @@
 import yargs from 'yargs';
-import nconf = require('nconf');
 export interface CliOption extends yargs.Options {
     env?: string | Array<string>;
     confDefault?: any;
@@ -18,5 +17,5 @@ export declare const commonOptions: CliOptions;
 declare type ConfigDefaults = {
     [key: string]: any;
 };
-export declare function getConfig(options: ConfigOptions): typeof nconf;
+export declare function getConfig(options?: ConfigOptions): any;
 export {};

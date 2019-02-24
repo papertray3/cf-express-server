@@ -76,7 +76,16 @@ type Transforms = {
     [key: string]: BasicTransform
 }
 
-export function  getConfig(options : ConfigOptions) {
+var thisConfig : any = null;
+
+export function  getConfig(options? : ConfigOptions) {
+
+    if (thisConfig != null) {
+        return thisConfig;
+    } else if (options == undefined) {
+        throw new Error('Missing configuration options');
+    }
+
     let dotEnvPath = options.envPath;
     if (dotEnvPath) {
         config({path: resolve(normalize(dotEnvPath))});
@@ -144,6 +153,7 @@ export function  getConfig(options : ConfigOptions) {
     }
 
     nconf.add('cfenv', {type: 'literal', store: cfenv.getAppEnv()});
-
-    return nconf;
+    thisConfig = nconf;
+    
+    return thisConfig;
 }
