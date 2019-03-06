@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import { resolve, normalize } from 'path';
 import yargs from 'yargs';
-import nconf = require('nconf');
+import nconf from 'nconf';
 
 const cfenv = require('cfenv');
 
@@ -19,6 +19,7 @@ export interface CliOptions {
 
 export interface ConfigOptions {
     version?: string,
+    loggerName?: string,
     envPath?: string,
     usage?: string,
     cliOptions?: CliOptions,
@@ -76,15 +77,7 @@ type Transforms = {
     [key: string]: BasicTransform
 }
 
-var thisConfig : any = null;
-
-export function  getConfig(options? : ConfigOptions) {
-
-    if (thisConfig != null) {
-        return thisConfig;
-    } else if (options == undefined) {
-        throw new Error('Missing configuration options');
-    }
+export function  configure(options : ConfigOptions) : typeof nconf {
 
     let dotEnvPath = options.envPath;
     if (dotEnvPath) {
@@ -153,7 +146,5 @@ export function  getConfig(options? : ConfigOptions) {
     }
 
     nconf.add('cfenv', {type: 'literal', store: cfenv.getAppEnv()});
-    thisConfig = nconf;
-    
-    return thisConfig;
+    return nconf;
 }
