@@ -1,9 +1,9 @@
 /// <reference types="node" />
+import { Server } from 'net';
 import { Express } from 'express';
-import { Logger, Configuration } from 'log4js';
+import { Logger } from 'log4js';
 import nconf from 'nconf';
 import { CliOptions, ConfigOptions } from './config';
-import { Server } from 'net';
 export { CliOptions, ConfigOptions };
 export interface CFExpressServer extends Express {
     getConfig(): typeof nconf;
@@ -11,7 +11,8 @@ export interface CFExpressServer extends Express {
     start(listener?: Function): Server;
 }
 export interface AddIn {
+    priority: number;
     getOptions(currentOptions: CliOptions): CliOptions;
     addIn(server: CFExpressServer): void;
 }
-export declare function CreateCFServer(configuration?: ConfigOptions, loggerConfig?: Configuration | string, addins?: AddIn[]): CFExpressServer;
+export declare function CreateCFServer(configuration?: ConfigOptions, addins?: AddIn[]): CFExpressServer;
