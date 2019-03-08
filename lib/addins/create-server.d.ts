@@ -1,2 +1,2 @@
 import { AddIn } from '../index';
-export declare const ServerAddIn: AddIn;
+export declare const serverAddIn: AddIn;
