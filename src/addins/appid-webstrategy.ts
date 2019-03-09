@@ -2,7 +2,7 @@ import express from 'express';
 import passport from 'passport';
 import nconf from 'nconf';
 
-import { AddIn, CliOptions, CFExpressServer, BasicAddIn } from '../index';
+import { AddIn, CliOptions, CFExpressServer, BasicAddIn, Config } from '../index';
 import { SESSION_ADDIN_NAME } from './sessions';
 
 const WebAppStrategy = require('ibmcloud-appid').WebAppStrategy;
@@ -68,7 +68,7 @@ export const defaultAppIdUris: AppIdUris = {
     logout: '/ibm/bluemix/appid/logout'
 }
 
-export type RedirectUriFunction = (config: typeof nconf) => string;
+export type RedirectUriFunction = (config: Config) => string;
 
 export interface AppIdAddIn extends AddIn {
     configure(redirectUri?: string | RedirectUriFunction, appIdUris?: AppIdUris): void;

@@ -6,6 +6,7 @@ import { config } from 'dotenv';
 import { resolve, normalize } from 'path';
 import yargs from 'yargs';
 
+export type Config = typeof nconf;
 
 export interface AddIn {
     name: string,
@@ -134,7 +135,7 @@ type Transforms = {
     [key: string]: BasicTransform
 }
 
-function configure(options: ConfigOptions): typeof nconf {
+function configure(options: ConfigOptions): Config {
 
     let dotEnvPath = options.envPath;
     if (dotEnvPath) {
@@ -207,7 +208,7 @@ function configure(options: ConfigOptions): typeof nconf {
 }
 
 export interface CFExpressServer extends Express {
-    getConfig(): typeof nconf;
+    getConfig(): Config;
     getLogger(name?: string): Logger;
     start(listener?: Function): Server;
 }

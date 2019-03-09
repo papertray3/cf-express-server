@@ -1,7 +1,7 @@
 import session, { SessionOptions } from 'express-session';
 import nconf from 'nconf';
 
-import { AddIn, CliOptions, CFExpressServer, BasicAddIn } from '../index';
+import { AddIn, CliOptions, CFExpressServer, BasicAddIn, Config } from '../index';
 import { SESSION_ADDIN_NAME, SessionAddIn } from './sessions';
 
 const CloudantStore = require('connect-cloudant-store')(session);
@@ -33,7 +33,7 @@ const options : CliOptions = {
 
 export const CLOUDANT_STORE_ADDIN_NAME = 'cloudantStoreAddIn';
 export const CLOUDANT_STORE_ADDIN_PRIORITY = 200;
-export type StoreCreationCallback = (store : any, config : typeof nconf) => void;
+export type StoreCreationCallback = (store : any, config : Config) => void;
 export interface CloudantStoreAddIn extends AddIn {
     configure(sessionOptions : SessionOptions, cloudantStoreOptions? : any, storeCB? : StoreCreationCallback) : void;
 }
