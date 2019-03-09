@@ -1,5 +1,4 @@
-import nconf from 'nconf';
-import { AddIn } from '../index';
+import { AddIn, Config } from '../index';
 export declare const APPID_ADDIN_NAME = "appIdAddIn";
 export declare const APPID_ADDIN_PRIORITY = 700;
 export interface AppIdUris {
@@ -9,7 +8,7 @@ export interface AppIdUris {
     logout: string;
 }
 export declare const defaultAppIdUris: AppIdUris;
-export declare type RedirectUriFunction = (config: typeof nconf) => string;
+export declare type RedirectUriFunction = (config: Config) => string;
 export interface AppIdAddIn extends AddIn {
     configure(redirectUri?: string | RedirectUriFunction, appIdUris?: AppIdUris): void;
 }

@@ -4,6 +4,7 @@ import { Express } from 'express';
 import { Logger } from 'log4js';
 import nconf from 'nconf';
 import yargs from 'yargs';
+export declare type Config = typeof nconf;
 export interface AddIn {
     name: string;
     disabled: boolean;
@@ -48,7 +49,7 @@ declare type ConfigDefaults = {
     [key: string]: any;
 };
 export interface CFExpressServer extends Express {
-    getConfig(): typeof nconf;
+    getConfig(): Config;
     getLogger(name?: string): Logger;
     start(listener?: Function): Server;
 }
