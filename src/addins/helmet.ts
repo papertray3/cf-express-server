@@ -1,10 +1,6 @@
 import helmet, { IHelmetConfiguration } from 'helmet';
 
-import { AddIn, CliOptions, CFExpressServer } from '../index';
-
-export interface HelmetAddIn extends AddIn {
-    configure(options: IHelmetConfiguration): void;
-}
+import { AddIn, CliOptions, CFExpressServer, BasicAddIn } from '../index';
 
 const options: CliOptions = {
     noHelmet: {
@@ -16,25 +12,43 @@ const options: CliOptions = {
     }
 }
 
+export const HELMET_ADDIN_NAME = 'helmetAddIn';
+export const HELMET_ADDIN_PRIORITY = 110;
 
-let helmetConfig : IHelmetConfiguration;
-export const helmetAddIn: HelmetAddIn = {
-    disabled: false,
-    priority: 110,
-    configure: (options: IHelmetConfiguration): void => { helmetConfig = options; },
-    getOptions: (currentOptions : CliOptions) => { return options; },
-    addIn: (server : CFExpressServer) => { 
-        const log = server.getLogger('helmetAddIn');
+export interface HelmetAddIn extends AddIn {
+    configure(options: IHelmetConfiguration): void;
+}
+
+class HelmetAddInImpl extends BasicAddIn implements HelmetAddIn {
+
+    protected _helmetConfig : IHelmetConfiguration | undefined;
+
+    configure(options: helmet.IHelmetConfiguration): void {
+        this._helmetConfig = options;
+    }
+
+    getOptions(currentOptions: CliOptions, addIns: AddIn[]): CliOptions | null {
+        return options;
+    }   
+    
+    addIn(server: CFExpressServer, addIns: AddIn[]): void {
+        const log = server.getLogger(this.name);
         const config = server.getConfig();
 
         if (config.get('noHelmet')) {
-            log.debug('Helmet AddIn disabled');
+            log.info('Helmet AddIn disabled');
             return;
         }
         
         log.info('Configuring helmet');
-        if (!helmetConfig)
-            log.info('Using default configuration');
-        server.use(helmet(helmetConfig));
+        if (!this._helmetConfig)
+            log.debug('Using default configuration');
+
+        server.use(helmet(this._helmetConfig));
     }
+
+
 }
+
+
+export const helmetAddIn: HelmetAddIn = new HelmetAddInImpl(HELMET_ADDIN_NAME, HELMET_ADDIN_PRIORITY);

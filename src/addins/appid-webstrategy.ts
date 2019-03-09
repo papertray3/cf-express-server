@@ -1,8 +1,9 @@
 import express from 'express';
 import passport from 'passport';
-import bodyParser from 'body-parser'
+import nconf from 'nconf';
 
-import { AddIn, CliOptions, CFExpressServer } from '../index';
+import { AddIn, CliOptions, CFExpressServer, BasicAddIn } from '../index';
+import { SESSION_ADDIN_NAME } from './sessions';
 
 const WebAppStrategy = require('ibmcloud-appid').WebAppStrategy;
 
@@ -50,6 +51,9 @@ const options: CliOptions = {
     }
 }
 
+export const APPID_ADDIN_NAME = 'appIdAddIn';
+export const APPID_ADDIN_PRIORITY = 700;
+
 export interface AppIdUris {
     landingPage: string,
     login: string,
@@ -64,106 +68,109 @@ export const defaultAppIdUris: AppIdUris = {
     logout: '/ibm/bluemix/appid/logout'
 }
 
-export type RedirectUriFunction = () => string;
+export type RedirectUriFunction = (config: typeof nconf) => string;
 
 export interface AppIdAddIn extends AddIn {
     configure(redirectUri?: string | RedirectUriFunction, appIdUris?: AppIdUris): void;
 }
 
-let appIdUrisConfig: AppIdUris;
-let redirectUriConfig: string | RedirectUriFunction;
+class AppIdAddInImpl extends BasicAddIn implements AppIdAddIn {
 
+    protected _appIdUrisConfig: AppIdUris | undefined;
+    protected _redirectUriConfig: string | RedirectUriFunction | undefined;
 
-export const appIdAddIn: AppIdAddIn = {
-    disabled: false,
-    priority: 700,
-    configure: (redirectUri?: string | RedirectUriFunction, appIdUris?: AppIdUris): void => {
+    configure(redirectUri?: string | RedirectUriFunction | undefined, appIdUris?: AppIdUris | undefined): void {
         if (redirectUri)
-            redirectUriConfig = redirectUri;
+            this._redirectUriConfig = redirectUri;
 
         if (appIdUris) {
-            appIdUrisConfig = appIdUris;
+            this._appIdUrisConfig = appIdUris;
         } else {
-            appIdUrisConfig = defaultAppIdUris;
+            this._appIdUrisConfig = defaultAppIdUris;
         }
-    },
-    getOptions: (currentOptions: CliOptions) => options,
-    addIn: (server: CFExpressServer): void => {
-        const log = server.getLogger('appIdAddIn');
+    }
+   
+    
+    getOptions(currentOptions: CliOptions, addIns: AddIn[]): CliOptions | null {
+        return options;
+    }   
+    
+    addIn(server: CFExpressServer, addIns: AddIn[]): void {
+        const log = server.getLogger(this.name);
         const config = server.getConfig();
 
         if (config.get('noSignOn')) {
             log.debug('AppID AddIn disabled');
             return;
         }
-        /*
-                if (passportInitializeAddIn.disabled || config.get('noPassport')) {
-                    log.error('AppID AddIn requires Passport initialization. AppId AddIn will be disabled.');
-                    return;
-                }
-            }
-            */
+
+        let sessionAddIn : AddIn | undefined = addIns.find(curAddIn => curAddIn.name == SESSION_ADDIN_NAME);
+        if (!sessionAddIn || sessionAddIn.disabled) {
+            log.error('AppId AddIn is depenedent on Session AddIn...AppId AddIn will be disabled');
+            this.disabled = true;
+            return;
+        }
 
         log.debug('Setting up AppID...protected resources should be configured before this AddIn. Current priority of this AddIn is: ', appIdAddIn.priority);
 
-        server.use(bodyParser.urlencoded({extended: true}));
-        server.use(bodyParser.json());
         server.use(passport.initialize());
         server.use(passport.session());
 
+        if (!this._appIdUrisConfig)
+            this._appIdUrisConfig = defaultAppIdUris;
 
-        log.debug(appIdUrisConfig);
-
-        if (!appIdUrisConfig) 
-            appIdUrisConfig = defaultAppIdUris;
-
-/*         if (redirectUriConfig) {
-            webappStrategyOptions.redirectUri = typeof redirectUriConfig === 'string' ? redirectUriConfig : redirectUriConfig();
-        } */
+        log.debug('AppId URI configuration:');
+        log.debug(this._appIdUrisConfig);
 
         const webappStrategyOptions: any = !config.get('appIdTenantId') ? {} : {
             tenantId: config.get('appIdTenantId'),
             clientId: config.get('appIdClientId'),
             secret: config.get('appIdSecret'),
             oauthServerUrl: config.get('appIdOauthServerUrl'),
-            redirectUri: config.get('url') + appIdUrisConfig.callback
         };
+
+        if (this._redirectUriConfig) {
+            webappStrategyOptions.redirectUri = typeof this._redirectUriConfig === 'string' ? this._redirectUriConfig : this._redirectUriConfig(server.getConfig());
+        }
+
+
 
         passport.use(new WebAppStrategy(webappStrategyOptions));
 
-        passport.serializeUser(function(user, cb) {
+        passport.serializeUser(function (user, cb) {
             cb(null, user);
         });
-         
-        passport.deserializeUser(function(obj, cb) {
+
+        passport.deserializeUser(function (obj, cb) {
             cb(null, obj);
         });
-         
+
         // Explicit login endpoint. Will always redirect browser to login widget due to {forceLogin: true}. If forceLogin is set to false the redirect to login widget will not occur if user is already authenticated
-        server.get(appIdUrisConfig.login, passport.authenticate(WebAppStrategy.STRATEGY_NAME, {
-            successRedirect: appIdUrisConfig.landingPage,
+        server.get(this._appIdUrisConfig.login, passport.authenticate(WebAppStrategy.STRATEGY_NAME, {
+            successRedirect: this._appIdUrisConfig.landingPage,
             forceLogin: true
         } as WebAppStrategyAuthenticationOptions), (req: express.Request, res: express.Response, next: express.NextFunction) => {
             log.info('here...start');
             next();
         });
 
-        server.get(appIdUrisConfig.callback, passport.authenticate(WebAppStrategy.STRATEGY_NAME), (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        server.get(this._appIdUrisConfig.callback, passport.authenticate(WebAppStrategy.STRATEGY_NAME), (req: express.Request, res: express.Response, next: express.NextFunction) => {
             log.info('here...hello');
             next();
         });
 
         // Logout endpoint. Clears authentication information from session
-        server.get(appIdUrisConfig.logout, (req: express.Request, res: express.Response) => {
+        server.get(this._appIdUrisConfig.logout, (req: express.Request, res: express.Response) => {
             WebAppStrategy.logout(req);
-            res.redirect(appIdUrisConfig.landingPage);
+            res.redirect((<AppIdUris>this._appIdUrisConfig).landingPage);
         });
-    
+
         // Protected area. If current user is not authenticated - redirect to the login widget will be returned.
         // In case user is authenticated - a page with current user information will be returned.
         server.use(passport.authenticate(WebAppStrategy.STRATEGY_NAME), (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            log.info('here...hello');
-            res.send('hello');
+            next();
         });
     }
 }
+
+export const appIdAddIn: AppIdAddIn = new AppIdAddInImpl(APPID_ADDIN_NAME, APPID_ADDIN_PRIORITY);

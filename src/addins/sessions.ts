@@ -1,12 +1,7 @@
 import session, { SessionOptions } from 'express-session';
-import passport from 'passport';
 
-import { AddIn, CliOptions, CFExpressServer } from '../index';
-import { appIdAddIn } from './appid-webstrategy';
+import { AddIn, CliOptions, CFExpressServer, BasicAddIn } from '../index';
 
-export interface SessionAddIn extends AddIn {
-    configure(options: SessionOptions): void;
-}
 
 const options: CliOptions = {
     noSession: {
@@ -18,40 +13,44 @@ const options: CliOptions = {
     }
 }
 
-let sessionConfig : SessionOptions = {
+
+export const SESSION_ADDIN_NAME = 'sessionAddIn';
+export const SESSION_ADDIN_PRIORITY = 250;
+
+export interface SessionAddIn extends AddIn {
+    configure(options: SessionOptions): void;
+}
+
+class SessionAddInImpl extends BasicAddIn implements SessionAddIn {
+
+    protected _sessionConfig : SessionOptions = {
         secret: 'random stuff',
         resave: false,
         saveUninitialized: true
       };
 
-let defaultConfig = true;
+    protected _defaultConfig = true;   
 
-export const sessionAddIn : SessionAddIn = {
-    disabled: false,
-    priority: 250,
-    getOptions: (currentOptions : CliOptions) => options,
-    configure: (options : SessionOptions) => {
-        sessionConfig = options;
-        defaultConfig = false;
-    },
-    addIn: (server : CFExpressServer) => {
-        const log = server.getLogger('sessionAddIn');
+    configure(options: session.SessionOptions): void {
+        this._sessionConfig = options;
+        this._defaultConfig = false;
+    }
+    getOptions(currentOptions: CliOptions, addIns: AddIn[]): CliOptions | null {
+        return options;
+    }    
+    
+    addIn(server: CFExpressServer, addIns: AddIn[]): void {
+        const log = server.getLogger(this.name);
         const config = server.getConfig();
 
-        if (config.get('noSession')) {
-            log.debug('Session AddIn disabled');
-            if (!appIdAddIn.disabled) {
-                config.required(['noSignOn']);
-            }
-            return;
-        }
-
-        server.use(passport.initialize());
-
         log.info('Configuring sessions');
-        server.use(session(sessionConfig));
-        if (defaultConfig) {
-            log.info('Using default configuration for sessions. Consider configuring a session store.');
+        server.use(session(this._sessionConfig));
+        if (this._defaultConfig) {
+            log.warn('Using default configuration for sessions. Consider configuring a session store.');
         }
     }
+
+
 }
+
+export const sessionAddIn : SessionAddIn = new SessionAddInImpl(SESSION_ADDIN_NAME, SESSION_ADDIN_PRIORITY);

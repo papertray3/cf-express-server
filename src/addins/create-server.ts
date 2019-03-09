@@ -1,9 +1,9 @@
 import { basename } from 'path';
 
-import { AddIn, CliOptions, CFExpressServer } from '../index';
+import { AddIn, CliOptions, CFExpressServer, BasicAddIn } from '../index';
 import { readFileSync } from 'fs';
 import { createServer as createHTTPSServer } from 'https';
-import { createServer } from 'http';
+import { createServer, Server } from 'http';
 
 const GROUP = 'Security Options'
 
@@ -44,18 +44,19 @@ const options: CliOptions = {
     }
 }
 
+export const SERVER_ADDIN_NAME = 'serverAddIn';
+export const SERVER_ADDIN_PRIORITY = 10000;
 
-export const serverAddIn: AddIn = {
-    disabled: false,
-    priority: 10000,
-    getOptions: (currentOptions: CliOptions) => {
+class ServerAddInImpl extends BasicAddIn {
+    getOptions(currentOptions: CliOptions, addIns: AddIn[]): CliOptions | null {
         return options;
-    },
-    addIn: (app: CFExpressServer) => {
-
-        app.start = (listener?: Function) => {
-            const log = app.getLogger('serverAddIn');
-            const config = app.getConfig();
+    }    
+    
+    addIn(server: CFExpressServer, addIns: AddIn[]): void {
+        let name = this.name;
+        server.start = (listener?: Function) => {
+            const log = server.getLogger(name);
+            const config = server.getConfig();
             const port = config.get('port');
 
             if (!(config.get('noSSL')) && config.get('protocol') === 'https') {
@@ -68,7 +69,7 @@ export const serverAddIn: AddIn = {
                         ca: readFileSync(config.get('sslCAFile'))
                     }
 
-                    return createHTTPSServer(options, app).listen(port, () => {
+                    return createHTTPSServer(options, server).listen(port, () => {
                         log.info('Starting HTTPS Server...');
                         if (listener)
                             listener();
@@ -80,11 +81,16 @@ export const serverAddIn: AddIn = {
                 }
             }
 
-            return createServer(app).listen(port, () => {
+            return createServer(server).listen(port, () => {
                 log.info('Starting HTTP Server...');
                 if (listener)
                     listener();
             });
         }
     }
+
+
 }
+
+
+export const serverAddIn: AddIn = new ServerAddInImpl(SERVER_ADDIN_NAME, SERVER_ADDIN_PRIORITY);
