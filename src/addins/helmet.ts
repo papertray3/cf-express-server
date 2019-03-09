@@ -11,6 +11,9 @@ const options: CliOptions = {
         group: 'Server Options'
     }
 }
+export enum HelmetConfigNames {
+    HELMET_OFF = 'noHelmet'
+}
 
 export const HELMET_ADDIN_NAME = 'helmetAddIn';
 export const HELMET_ADDIN_PRIORITY = 110;
@@ -35,7 +38,7 @@ class HelmetAddInImpl extends BasicAddIn implements HelmetAddIn {
         const log = server.getLogger(this.name);
         const config = server.getConfig();
 
-        if (config.get('noHelmet')) {
+        if (config.get(HelmetConfigNames.HELMET_OFF)) {
             log.info('Helmet AddIn disabled');
             return;
         }

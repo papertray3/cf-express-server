@@ -1,6 +1,6 @@
 import { basename } from 'path';
 
-import { AddIn, CliOptions, CFExpressServer, BasicAddIn } from '../index';
+import { AddIn, CliOptions, CFExpressServer, BasicAddIn, CommonConfigNames } from '../index';
 import { readFileSync } from 'fs';
 import { createServer as createHTTPSServer } from 'https';
 import { createServer, Server } from 'http';
@@ -44,6 +44,14 @@ const options: CliOptions = {
     }
 }
 
+export enum ServerConfigNames {
+    SERVER_PROTOCOL = 'protocol',
+    SERVER_NO_SSL = 'noSSL',
+    SERVER_CA_FILE = 'sslCAFile',
+    SERVER_CERT_FILE = 'sslCertFile',
+    SERVER_KEY_FILE = 'sslKeyFile'
+}
+
 export const SERVER_ADDIN_NAME = 'serverAddIn';
 export const SERVER_ADDIN_PRIORITY = 10000;
 
@@ -57,16 +65,16 @@ class ServerAddInImpl extends BasicAddIn {
         server.start = (listener?: Function) => {
             const log = server.getLogger(name);
             const config = server.getConfig();
-            const port = config.get('port');
+            const port = config.get(CommonConfigNames.PORT);
 
-            if (!(config.get('noSSL')) && config.get('protocol') === 'https') {
-                config.required(['sslCAFile', 'sslCertFile', 'sslKeyFile']);
+            if (!(config.get(ServerConfigNames.SERVER_NO_SSL)) && config.get(ServerConfigNames.SERVER_PROTOCOL) === 'https') {
+                config.required([ServerConfigNames.SERVER_CA_FILE, ServerConfigNames.SERVER_CERT_FILE, ServerConfigNames.SERVER_KEY_FILE]);
 
                 try {
                     let options: any = {
-                        key: readFileSync(config.get('sslKeyFile')),
-                        cert: readFileSync(config.get('sslCertFile')),
-                        ca: readFileSync(config.get('sslCAFile'))
+                        key: readFileSync(config.get(ServerConfigNames.SERVER_KEY_FILE)),
+                        cert: readFileSync(config.get(ServerConfigNames.SERVER_CERT_FILE)),
+                        ca: readFileSync(config.get(ServerConfigNames.SERVER_CA_FILE))
                     }
 
                     return createHTTPSServer(options, server).listen(port, () => {

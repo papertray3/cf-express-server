@@ -2,7 +2,7 @@ import session, { SessionOptions } from 'express-session';
 import nconf from 'nconf';
 
 import { AddIn, CliOptions, CFExpressServer, BasicAddIn, Config } from '../index';
-import { SESSION_ADDIN_NAME, SessionAddIn } from './sessions';
+import { SESSION_ADDIN_NAME, SessionAddIn, SessionConfigNames } from './sessions';
 
 const CloudantStore = require('connect-cloudant-store')(session);
 
@@ -29,6 +29,12 @@ const options : CliOptions = {
         env: 'CLOUDANT_STORE_INSTANCE_NAME',
         group: GROUP
     }
+}
+
+export enum CloudantStoreConfigNames {
+    CLOUDANT_STORE_OFF = 'noCloudantStore',
+    CLOUDANT_STORE_URL = 'cloudantStoreUrl',
+    CLOUDANT_STORE_INSTANCE_NAME = 'cloudantStoreInstanceName'
 }
 
 export const CLOUDANT_STORE_ADDIN_NAME = 'cloudantStoreAddIn';
@@ -60,7 +66,7 @@ class CloudantStoreAddInImpl extends BasicAddIn implements CloudantStoreAddIn {
         const log = server.getLogger(this.name);
         const config = server.getConfig();
 
-        if (config.get('noCloudantStore')) {
+        if (config.get(CloudantStoreConfigNames.CLOUDANT_STORE_OFF)) {
             log.debug('Cloudant Session Store AddIn disabled');
             return;
         }
@@ -79,23 +85,23 @@ class CloudantStoreAddInImpl extends BasicAddIn implements CloudantStoreAddIn {
         }
 
 
-        if (!config.get('noCloudantStore') && config.get('noSession')) {
-            config.required(['noCloudantStore']);
+        if (!config.get(CloudantStoreConfigNames.CLOUDANT_STORE_OFF) && config.get(SessionConfigNames.SESSION_OFF)) {
+            config.required([CloudantStoreConfigNames.CLOUDANT_STORE_OFF]);
         }
 
         if (!this._cloudantStoreConfig) {
             this._cloudantStoreConfig = {}
         }
 
-        if (!config.get('cloudantStoreInstanceName')) {
-            config.required(['cloudantStoreUrl'])
-            this._cloudantStoreConfig.url = config.get('cloudantStoreUrl');
+        if (!config.get(CloudantStoreConfigNames.CLOUDANT_STORE_INSTANCE_NAME)) {
+            config.required([CloudantStoreConfigNames.CLOUDANT_STORE_URL])
+            this._cloudantStoreConfig.url = config.get(CloudantStoreConfigNames.CLOUDANT_STORE_URL);
         } else {
             try {
-                this._cloudantStoreConfig.instanceName = config.get('cloudantStoreInstanceName');
+                this._cloudantStoreConfig.instanceName = config.get(CloudantStoreConfigNames.CLOUDANT_STORE_INSTANCE_NAME);
                 this._cloudantStoreConfig.vcapServices = JSON.parse(process.env.VCAP_SERVICES as string);
             } catch (e) {
-                log.error('Unable to find the Cloudant Store VCAP instance ', config.get('cloudantStoreInstanceName'));
+                log.error('Unable to find the Cloudant Store VCAP instance ', config.get(CloudantStoreConfigNames.CLOUDANT_STORE_INSTANCE_NAME));
                 log.error('Cloudant Session Store AddIn will be disabled');
                 return;
             }

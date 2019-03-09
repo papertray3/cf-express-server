@@ -51,6 +51,14 @@ const options: CliOptions = {
     }
 }
 
+export enum AppIdConfigNames {
+    APPID_OFF = 'noSignOn',
+    APPID_TENANT_ID = 'appIdTenantId',
+    APPID_CLIENT_ID = 'appIdClientId',
+    APPID_SECRET = 'appIdSecret',
+    APPID_OAUTH_SERVER_URL = 'appIdOauthServerUrl'
+}
+
 export const APPID_ADDIN_NAME = 'appIdAddIn';
 export const APPID_ADDIN_PRIORITY = 700;
 
@@ -99,7 +107,7 @@ class AppIdAddInImpl extends BasicAddIn implements AppIdAddIn {
         const log = server.getLogger(this.name);
         const config = server.getConfig();
 
-        if (config.get('noSignOn')) {
+        if (config.get(AppIdConfigNames.APPID_OFF)) {
             log.debug('AppID AddIn disabled');
             return;
         }
@@ -122,11 +130,11 @@ class AppIdAddInImpl extends BasicAddIn implements AppIdAddIn {
         log.debug('AppId URI configuration:');
         log.debug(this._appIdUrisConfig);
 
-        const webappStrategyOptions: any = !config.get('appIdTenantId') ? {} : {
-            tenantId: config.get('appIdTenantId'),
-            clientId: config.get('appIdClientId'),
-            secret: config.get('appIdSecret'),
-            oauthServerUrl: config.get('appIdOauthServerUrl'),
+        const webappStrategyOptions: any = !config.get(AppIdConfigNames.APPID_TENANT_ID) ? {} : {
+            tenantId: config.get(AppIdConfigNames.APPID_TENANT_ID),
+            clientId: config.get(AppIdConfigNames.APPID_CLIENT_ID),
+            secret: config.get(AppIdConfigNames.APPID_SECRET),
+            oauthServerUrl: config.get(AppIdConfigNames.APPID_OAUTH_SERVER_URL),
         };
 
         if (this._redirectUriConfig) {

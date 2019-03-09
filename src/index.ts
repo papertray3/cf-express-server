@@ -84,6 +84,13 @@ export interface ConfigOptions {
     overrides?: ConfigDefaults
 }
 
+export enum CommonConfigNames {
+    ENV = 'env',
+    PORT = 'port',
+    BIND = 'bind',
+    LOG_LEVEL = 'logLevel'
+}
+
 export const commonOptions: CliOptions = {
     env: {
         describe: 'Operational mode',
@@ -101,12 +108,6 @@ export const commonOptions: CliOptions = {
         describe: 'Host to bind to',
         type: 'string',
         env: 'BIND'
-    },
-    logLevel: {
-        describe: 'log4js log level for default console appender. Use env:LOG4JS_CONFIG to point to a configuration file (https://www.npmjs.com/package/log4js). This option will be ignored if a configuration file is used',
-        type: 'string',
-        env: 'LOG_LEVEL',
-        confDefault: 'info'
     }
 }
 
@@ -244,8 +245,8 @@ export function CreateCFServer(configuration?: ConfigOptions, addins?: AddIn[]):
 
     app.start = (listener?: Function) => {
         const log = app.getLogger('CreateCFServer');
-        return app.listen(appConfig.get('port'), () => {
-            log.info('Listening on port: ' + appConfig.get('port'));
+        return app.listen(appConfig.get(CommonConfigNames.PORT), () => {
+            log.info('Listening on port: ' + appConfig.get(CommonConfigNames.PORT));
             if (listener)
                 listener();
         });

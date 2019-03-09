@@ -1,5 +1,8 @@
 import { IHelmetConfiguration } from 'helmet';
 import { AddIn } from '../index';
+export declare enum HelmetConfigNames {
+    HELMET_OFF = "noHelmet"
+}
 export declare const HELMET_ADDIN_NAME = "helmetAddIn";
 export declare const HELMET_ADDIN_PRIORITY = 110;
 export interface HelmetAddIn extends AddIn {

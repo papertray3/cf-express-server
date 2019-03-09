@@ -44,6 +44,12 @@ export interface ConfigOptions {
     cliOptions?: CliOptions;
     overrides?: ConfigDefaults;
 }
+export declare enum CommonConfigNames {
+    ENV = "env",
+    PORT = "port",
+    BIND = "bind",
+    LOG_LEVEL = "logLevel"
+}
 export declare const commonOptions: CliOptions;
 declare type ConfigDefaults = {
     [key: string]: any;

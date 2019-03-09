@@ -13,6 +13,9 @@ const options: CliOptions = {
     }
 }
 
+export enum SessionConfigNames {
+    SESSION_OFF = 'noSession'
+}
 
 export const SESSION_ADDIN_NAME = 'sessionAddIn';
 export const SESSION_ADDIN_PRIORITY = 250;
