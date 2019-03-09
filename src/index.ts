@@ -88,7 +88,8 @@ export enum CommonConfigNames {
     ENV = 'env',
     PORT = 'port',
     BIND = 'bind',
-    LOG_LEVEL = 'logLevel'
+    LOG_LEVEL = 'logLevel',
+    IS_LOCAL = 'isLocal'
 }
 
 export const commonOptions: CliOptions = {
