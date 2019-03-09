@@ -49,7 +49,13 @@ import { sessionAddIn } from './addins/sessions';
 import { cloudantStoreAddIn } from './addins/cloudant-store';
 import { appIdAddIn } from './addins/appid-webstrategy';
 
-export { serverAddIn, helmetAddIn, log4jsAddIn, sessionAddIn, cloudantStoreAddIn, appIdAddIn };
+export * from './addins/create-server';
+export * from './addins/helmet';
+export * from './addins/logging';
+export * from './addins/sessions';
+export * from './addins/cloudant-store';
+export * from './addins/appid-webstrategy';
+
 
 
 let _addins: AddIn[] = [log4jsAddIn, helmetAddIn, cloudantStoreAddIn, sessionAddIn, appIdAddIn, serverAddIn];

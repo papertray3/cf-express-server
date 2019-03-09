@@ -22,13 +22,12 @@ export declare abstract class BasicAddIn implements AddIn {
     abstract getOptions(currentOptions: CliOptions, addIns: AddIn[]): CliOptions | null;
     abstract addIn(server: CFExpressServer, addIns: AddIn[]): void;
 }
-import { serverAddIn } from './addins/create-server';
-import { helmetAddIn } from './addins/helmet';
-import { log4jsAddIn } from './addins/logging';
-import { sessionAddIn } from './addins/sessions';
-import { cloudantStoreAddIn } from './addins/cloudant-store';
-import { appIdAddIn } from './addins/appid-webstrategy';
-export { serverAddIn, helmetAddIn, log4jsAddIn, sessionAddIn, cloudantStoreAddIn, appIdAddIn };
+export * from './addins/create-server';
+export * from './addins/helmet';
+export * from './addins/logging';
+export * from './addins/sessions';
+export * from './addins/cloudant-store';
+export * from './addins/appid-webstrategy';
 export interface CliOption extends yargs.Options {
     env?: string | Array<string>;
     confDefault?: any;
