@@ -42,5 +42,10 @@
     "nconf": "^0.10.0",
     "passport": "^0.4.0",
     "yargs": "13.2.1"
-  }
+  },
+  "keywords": [
+    "express",
+    "bluemix",
+    "cloud foundry"
+  ]
 }
