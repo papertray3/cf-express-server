@@ -140,3 +140,14 @@ Command line options can be provided for each AddIn, as well as global options i
 
 Some of the builtin AddIns have a method for configuring the AddIn before being added in (for instance the session store has a configure method `configure(options: SessionOptions): void` that should be called before the creation of the CFExpressServer).
 
+## Server Usage
+The CFExpressServer is simply an express server with the following methods attached:
+
+### getConfig() : Config
+This method returns the [nconf](https://github.com/indexzero/nconf) object that contains the runtime configuration and command line option settings.
+
+### getLogger(name? : string) : Logger
+Gets the configured [log4js](https://log4js-node.github.io/log4js-node/) logger. You can configure the log4js builtin AddIn programmatically or via the LOG4JS_CONFIG environment variable. 
+
+### start(listener? : Function) : void
+A convenience function for starting the server (akin to `server.listen()`). If the `serverAddIn` is used, this method will create either an HTTP or HTTPS server based on command line options. 
