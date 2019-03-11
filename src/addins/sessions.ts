@@ -46,6 +46,11 @@ class SessionAddInImpl extends BasicAddIn implements SessionAddIn {
         const log = server.getLogger(this.name);
         const config = server.getConfig();
 
+        if (config.get(SessionConfigNames.SESSION_OFF)) {
+            log.debug('Session AddIn disabled...');
+            return;
+        }
+
         log.info('Configuring sessions');
         server.use(session(this._sessionConfig));
         if (this._defaultConfig) {
