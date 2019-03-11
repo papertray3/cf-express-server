@@ -20,7 +20,7 @@ export declare abstract class BasicAddIn implements AddIn {
     disabled: boolean;
     readonly name: string;
     priority: number;
-    abstract getOptions(currentOptions: CliOptions, addIns: AddIn[]): CliOptions | null;
+    getOptions(currentOptions: CliOptions, addIns: AddIn[]): CliOptions | null;
     abstract addIn(server: CFExpressServer, addIns: AddIn[]): void;
 }
 export * from './addins/create-server';

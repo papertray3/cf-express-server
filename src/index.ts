@@ -38,7 +38,10 @@ export abstract class BasicAddIn implements AddIn {
     get priority() : number { return this._priority; }
     set priority( pri : number )  { this._priority = pri; }
 
-    abstract getOptions(currentOptions : CliOptions, addIns : AddIn[]) : CliOptions | null;
+    getOptions(currentOptions : CliOptions, addIns : AddIn[]) : CliOptions | null {
+        return null;
+    }
+    
     abstract addIn(server : CFExpressServer, addIns : AddIn[]) : void;
 }
 
