@@ -1,6 +1,7 @@
 import session, { SessionOptions } from 'express-session';
+import { AddIn, CFExpressServer, BasicAddIn } from '../index';
+import { CliOptions } from '@papertray3/cf-express-config';
 
-import { AddIn, CliOptions, CFExpressServer, BasicAddIn } from '../index';
 
 
 const options: CliOptions = {

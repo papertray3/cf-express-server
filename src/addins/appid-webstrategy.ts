@@ -1,9 +1,8 @@
 import express from 'express';
 import passport from 'passport';
-import nconf from 'nconf';
-
-import { AddIn, CliOptions, CFExpressServer, BasicAddIn, Config } from '../index';
+import { AddIn, CFExpressServer, BasicAddIn } from '../index';
 import { SESSION_ADDIN_NAME } from './sessions';
+import { CliOptions, Config } from '@papertray3/cf-express-config';
 
 const WebAppStrategy = require('ibmcloud-appid').WebAppStrategy;
 

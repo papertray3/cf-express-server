@@ -1,8 +1,7 @@
 import session, { SessionOptions } from 'express-session';
-import nconf from 'nconf';
-
-import { AddIn, CliOptions, CFExpressServer, BasicAddIn, Config } from '../index';
+import { AddIn, CFExpressServer, BasicAddIn } from '../index';
 import { SESSION_ADDIN_NAME, SessionAddIn, SessionConfigNames } from './sessions';
+import { CliOptions, Config } from '@papertray3/cf-express-config';
 
 const CloudantStore = require('connect-cloudant-store')(session);
 

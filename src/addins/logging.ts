@@ -1,8 +1,7 @@
 import { configure as _log4jsConfigure, Configuration } from 'log4js';
-
-import { AddIn, CliOptions, CFExpressServer, BasicAddIn, CommonConfigNames } from '../index';
-import { serverAddIn } from './create-server';
+import { AddIn, CFExpressServer, BasicAddIn } from '../index';
 import { existsSync, lstatSync } from 'fs';
+import { CliOptions } from '@papertray3/cf-express-config';
 
 const options : CliOptions = {
     logLevel: {

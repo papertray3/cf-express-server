@@ -1,6 +1,6 @@
 import helmet, { IHelmetConfiguration } from 'helmet';
-
-import { AddIn, CliOptions, CFExpressServer, BasicAddIn } from '../index';
+import { AddIn, CFExpressServer, BasicAddIn } from '../index';
+import { CliOptions } from '@papertray3/cf-express-config';
 
 const options: CliOptions = {
     noHelmet: {
