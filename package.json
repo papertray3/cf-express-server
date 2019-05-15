@@ -30,7 +30,7 @@
     "url": "git://github.com/papaertray3/cf-express-server.git"
   },
   "dependencies": {
-    "@papertray3/cf-express-config": "^2.0.0",
+    "@papertray3/cf-express-config": "^2.0.2",
     "body-parser": "^1.19.0",
     "cfenv": "^1.2.2",
     "connect-cloudant-store": "^0.1.2",
