@@ -98,7 +98,7 @@ class CloudantStoreAddInImpl extends BasicAddIn implements CloudantStoreAddIn {
         } else {
             try {
                 this._cloudantStoreConfig.instanceName = config.get(CloudantStoreConfigNames.CLOUDANT_STORE_INSTANCE_NAME);
-                this._cloudantStoreConfig.vcapServices = JSON.parse(process.env.VCAP_SERVICES as string);
+                this._cloudantStoreConfig.vcapServices = config.get('services');
             } catch (e) {
                 log.error('Unable to find the Cloudant Store VCAP instance ', config.get(CloudantStoreConfigNames.CLOUDANT_STORE_INSTANCE_NAME));
                 log.error('Cloudant Session Store AddIn will be disabled');
