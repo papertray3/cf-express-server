@@ -18,7 +18,7 @@ const components : interfaces.MiddlewareSequenceArray = [
 ]
 
 
-namespace standard {
+export namespace standard {
     export const mode = (defaultMode : string = 'development') => {
         return process.env.NODE_ENV ? process.env.NODE_ENV : defaultMode;
     }
