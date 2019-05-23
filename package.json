@@ -14,6 +14,7 @@
   "license": "MIT",
   "devDependencies": {
     "rimraf": "^2.6.3",
+    "ts-node": "^8.1.0",
     "typescript": "^3.4.5"
   },
   "repository": {
@@ -21,28 +22,19 @@
     "url": "git://github.com/papaertray3/cf-express-server.git"
   },
   "dependencies": {
-    "@papertray3/cf-express-config": "^2.0.2",
-    "body-parser": "^1.19.0",
-    "cfenv": "^1.2.2",
-    "connect-cloudant-store": "^0.1.2",
-    "dotenv": "^8.0.0",
-    "express": "^4.16.4",
-    "express-session": "^1.16.1",
-    "helmet": "^3.17.0",
-    "ibmcloud-appid": "^6.0.0",
-    "log4js": "^4.1.0",
-    "nconf": "^0.10.0",
-    "passport": "^0.4.0",
-    "yargs": "13.2.2",
-    "@types/dotenv": "^6.1.1",
+    "@cloudant/cloudant": "^4.1.0",
+    "@papertray3/cf-express-config": "^3.1.1",
     "@types/express": "^4.16.1",
     "@types/express-session": "^1.15.12",
     "@types/helmet": "0.0.43",
-    "@types/log4js": "^2.3.5",
-    "@types/nconf": "^0.10.0",
-    "@types/node": "^12.0.0",
-    "@types/passport": "^1.0.0",
-    "@types/yargs": "^13.0.0"
+    "@types/node": "^12.0.2",
+    "connect-cloudant-store": "^0.1.2",
+    "express": "^4.17.0",
+    "express-session": "^1.16.1",
+    "helmet": "^3.18.0",
+    "inversify": "^5.0.1",
+    "log4js": "^4.2.0",
+    "reflect-metadata": "^0.1.13"
   },
   "keywords": [
     "express",

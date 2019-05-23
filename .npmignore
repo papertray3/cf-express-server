@@ -3,3 +3,4 @@ tsconfig.json
 .env
 /node_modules
 .gitignore
+vcap-local.json
