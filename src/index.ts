@@ -30,10 +30,3 @@ namespace standard {
         return container;
     }
 }
-
-let container = standard.standardContainer();
-let app = new Application(container);
-
-app.start(() => {
-    console.log(`listening on port ${app.config.get(CommonConfigNames.PORT)}`);
-});
