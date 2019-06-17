@@ -1,6 +1,6 @@
 {
   "name": "@papertray3/cf-express-server",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Config module for express server components",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
