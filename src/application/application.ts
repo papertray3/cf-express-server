@@ -7,18 +7,18 @@ import { Server } from 'net';
 
 export class Application implements interfaces.Application {
 
-    protected readonly app : express.Express;
-    protected readonly server : Server;
+    public readonly handler : express.Express;
+    public readonly server : Server;
 
     public readonly config : Config;
     
 
     constructor(private _container : MiddlewareContainer) {
         this.config = this.configure();
-        this.app = express();
+        this.handler = express();
         this.server = this._container.isBound(ContainerBindingNames.SERVER) ?
-            this._container.get<interfaces.ServerComponent>(ContainerBindingNames.SERVER).createServer(this.app) :
-            createServer(this.app);
+            this._container.get<interfaces.ServerComponent>(ContainerBindingNames.SERVER).createServer(this.handler) :
+            createServer(this.handler);
 
         for(let component of this._container) {
             this.installMiddleware(component);
@@ -26,23 +26,19 @@ export class Application implements interfaces.Application {
     }
 
     protected configure() : Config {
-        let configOptions : ConfigOptions = this._container.isBound(ContainerBindingNames.CONFIG_OPTIONS) ? 
-            this._container.get<ConfigOptions>(ContainerBindingNames.CONFIG_OPTIONS) : 
-            { };
-
         let cliOptions : CliOptions = {}
         this._container.getAll<CliOptions>(ContainerBindingNames.CLI_OPTIONS).forEach(options => {
             cliOptions = Object.assign(cliOptions, options);
         });
 
-        let config = configure(configOptions, cliOptions);
+        let config = configure(cliOptions);
         this._container.bind<Config>(ContainerBindingNames.CONFIG).toConstantValue(config);
 
         return config;
     }
 
     protected installMiddleware(middleware : interfaces.MiddlewareComponent) {
-        middleware.install(this.app);
+        middleware.install(this);
     }
 
     start(listener? : () => void): void {
@@ -53,7 +49,7 @@ export class Application implements interfaces.Application {
     }    
     
     stop(): void {
-        throw new Error("Method not implemented.");
+        this.server.close();
     }
 
 

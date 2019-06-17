@@ -7,7 +7,7 @@ import { RequestListener } from 'http';
 namespace interfaces {
     export type Express = express.Express;
     export interface MiddlewareComponent {
-        install(app : Express) : void;
+        install(app : Application) : void;
     }
 
     export interface ServerComponent {
@@ -42,7 +42,6 @@ namespace interfaces {
     export interface MiddlewareContainer extends IterableIterator<MiddlewareComponent> {
 
         setServer(server : NewableServerComponent) : void;
-        setConfigOptions(configOptions : ConfigOptions) : void;
         addCliOptions(options: CliOptions) : void;
 
         registerMiddleware(component : NewableMiddlewareComponent) : void;
@@ -52,6 +51,11 @@ namespace interfaces {
     }
 
     export interface Application {
+        
+        readonly handler : express.Express;
+        readonly server : Server;
+        readonly config : Config;
+
         start(listener? : () => void): void;
         stop() : void;
     }    

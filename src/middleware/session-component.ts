@@ -19,8 +19,8 @@ export class SessionMiddlewareComponent implements interfaces.MiddlewareComponen
         }
     }
 
-    install(app : interfaces.Express) : void {
-        app.use(session(this._sessionConfig));
+    install(app : interfaces.Application) : void {
+        app.handler.use(session(this._sessionConfig));
     }
 }
 

@@ -12,8 +12,8 @@ export class HelmetMiddlewareComponentBindingNames {
 export class HelmetMiddlewareComponent implements interfaces.MiddlewareComponent {
     constructor(@inject(HelmetMiddlewareComponentBindingNames.CONFIG) @optional() private _config : helmet.IHelmetConfiguration){ }
 
-    install(app : interfaces.Express) : void {
-        app.use(helmet(this._config));
+    install(app : interfaces.Application) : void {
+        app.handler.use(helmet(this._config));
     }
 }
 

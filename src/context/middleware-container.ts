@@ -4,7 +4,6 @@ import { ConfigOptions, CliOptions } from '@papertray3/cf-express-config';
 import { Server } from 'net';
 
 export class ContainerBindingNames {
-    static readonly CONFIG_OPTIONS: string = "ConfigOptions";
     static readonly CLI_OPTIONS: string = "CliOptions";
     static readonly CONFIG: string = "Config";
     static readonly SERVER: string = "Server";
@@ -26,15 +25,6 @@ export class MiddlewareContainer extends Container implements interfaces.Middlew
         this.isBound(ContainerBindingNames.SERVER) ?
             this.rebind<interfaces.ServerComponent>(ContainerBindingNames.SERVER).to(server) :
             this.bind<interfaces.ServerComponent>(ContainerBindingNames.SERVER).to(server);
-    }
-
-    //convenience function for setting the config Options
-    setConfigOptions(configOptions: ConfigOptions): void {
-        let binding = this.isBound(ContainerBindingNames.CONFIG_OPTIONS) ?
-            this.rebind<ConfigOptions>(ContainerBindingNames.CONFIG_OPTIONS) :
-            this.bind<ConfigOptions>(ContainerBindingNames.CONFIG_OPTIONS);
-
-        binding.toConstantValue(configOptions);
     }
 
     addCliOptions(options: CliOptions): void {

@@ -11,7 +11,7 @@ export class StaticMiddlewareComponentBindingNames {
     static readonly CONFIG : string = "StaticConfig";
 }
 
-export class StaticMiddlewareCliOptons {
+export class StaticConfigNames {
     static readonly ROOT_DIR = 'rootDir';
 }
 
@@ -19,13 +19,13 @@ export class StaticMiddlewareCliOptons {
 export class StaticMiddlewareComponent implements interfaces.MiddlewareComponent {
     constructor(@inject(ContainerBindingNames.CONFIG) protected _config : Config){ }
 
-    install(app : interfaces.Express) : void {
-        const contentPath = resolve(this._config.get(StaticMiddlewareCliOptons.ROOT_DIR));
+    install(app : interfaces.Application) : void {
+        const contentPath = resolve(this._config.get(StaticConfigNames.ROOT_DIR));
 
         if (existsSync(contentPath) && lstatSync(contentPath).isDirectory()) {
             //log.info(`Attempting to serve ${contentPath}`);
-            app.use(express.static(contentPath));
-            app.get('*', (req: Request, res : Response) => {
+            app.handler.use(express.static(contentPath));
+            app.handler.get('*', (req: Request, res : Response) => {
                 res.sendFile(join(contentPath, 'index.html'));
             });
         } else {
@@ -37,12 +37,12 @@ export class StaticMiddlewareComponent implements interfaces.MiddlewareComponent
 }
 
 const options : CliOptions = {};
-options[StaticMiddlewareCliOptons.ROOT_DIR] = {
+options[StaticConfigNames.ROOT_DIR] = {
     describe: 'Root directory to serve',
     type: 'string',
     normalize: true,
     env: 'ROOT_DIR',
-    confDefault: join(__dirname, '..', 'public')
+    confDefault: join(process.cwd(), 'public')
 }
 
 export const staticMiddlewareComponentDescriptor : interfaces.MiddlewareComponentDescriptor = {
