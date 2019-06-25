@@ -17,7 +17,7 @@ export interface AuthenticationCustomCallback {
 export type AuthenticationMethod = 'get' | 'post';
 
 export interface AuthenticationRouteDescriptor {
-    route : string;
+    route : string | RegExp;
     method? : AuthenticationMethod, //defaults to get
     options? : AuthenticateOptions,
     cb? : AuthenticationCustomCallback
